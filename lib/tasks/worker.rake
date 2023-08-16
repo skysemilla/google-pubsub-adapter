@@ -5,11 +5,13 @@ require("concurrent")
 MAX_DELAY = 1.minutes
 
 namespace(:worker) do
-  def to_process?(timestamp) # if timestamp already passed or same as Time.now we will process the message
+  # if timestamp already passed or same as Time.now we will process the message
+  def to_process?(timestamp)
     remaining_time = [timestamp.to_i - Time.now.to_i, 0].max
     remaining_time.zero?
   end
 
+  # execution of job and acknowledging of message after execution
   def process_message(message, pubsub)
     puts("\n [WORKER][process_message] Time to process.")
     message.modify_ack_deadline!(MAX_DELAY.to_i)
@@ -24,6 +26,8 @@ namespace(:worker) do
     enqueue_failed_jobs(message, pubsub)
   end
 
+  # publish failed jobs to morgue queue
+  # create a subscription under the failed jobs topic
   def enqueue_failed_jobs(message, pubsub)
     puts("\n [WORKER][enqueue_failed_jobs] Message: #{message.data}")
 
@@ -35,6 +39,8 @@ namespace(:worker) do
     puts("\n [ERROR][WORKER][enqueue_failed_jobs]: Error publishing to morgue queue : #{e.message}")
   end
 
+  # use the environment variable set for the topic name
+  # to make it configurable
   def topic_name
     @topic_name ||= Rails.application.topic_name
   end

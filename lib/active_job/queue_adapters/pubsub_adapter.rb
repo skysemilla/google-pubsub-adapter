@@ -16,10 +16,11 @@ module ActiveJob
       # @param [ActiveJob::Base] job The job to be performed.
       # @param [Float] timestamp The time to perform the job.
       def enqueue_at(job, timestamp)
-        puts("\n [PubsubAdapter][enqueue_at]: #{job.inspect}")
+        puts("\n [PubsubAdapter][enqueue_at]: #{job.inspect} timestamp: #{timestamp}")
         publish_job(job, timestamp)
       end
 
+       # push job to the topic
       def publish_job(job, timestamp = 0)
         puts("\n [PubsubAdapter][publish_job]: #{job.inspect}")
         serialized_job = job.serialize

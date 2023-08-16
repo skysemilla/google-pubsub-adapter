@@ -16,6 +16,9 @@ class Pubsub
     client.topic(name) || client.create_topic(name)
   end
 
+  # find or create new subsription
+  # @param name [String] The name of the topic to subscribe
+  # we prefix the subscription name to avoid confusion
   def subscribe(name)
     puts("\n [PubsubAdapter][subscribe]: #{name}")
     prefixed_name = "subscription-#{name}"
