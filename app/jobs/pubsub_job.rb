@@ -3,7 +3,7 @@
 class PubsubJob < ApplicationJob
   # self.queue_adapter = :pubsub
   queue_as(:default)
-  retry_on(StandardError, wait: 2.second, attempts: 0) #changethis
+  retry_on(StandardError, wait: 5.minute, attempts: 2)
 
   def perform(*args)
     puts("\n [PubsubJob][perform-start] #{args}")
