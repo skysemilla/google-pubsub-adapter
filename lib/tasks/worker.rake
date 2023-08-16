@@ -45,7 +45,7 @@ namespace(:worker) do
     @topic_name ||= Rails.application.topic_name
   end
 
-  desc("Run the worker")
+  desc('Run the worker')
   task(run: :environment) do
     # See https://googleapis.dev/ruby/google-cloud-pubsub/latest/index.html
 
@@ -56,11 +56,11 @@ namespace(:worker) do
 
     subscriber = subscription.listen do |message|
       puts("\n Received message: #{message.data}")
-      if to_process?(message.attributes["timestamp"])
+      if to_process?(message.attributes['timestamp'])
         puts("\n [LISTEN] Processing right away....")
         process_message(message, pubsub)
       else
-        delay = message.attributes["timestamp"].to_i - Time.now.to_i
+        delay = message.attributes['timestamp'].to_i - Time.now.to_i
         puts("\n [LISTEN] Will be processed after #{delay}s")
         message.modify_ack_deadline!(delay)
       end
@@ -79,13 +79,13 @@ namespace(:worker) do
       # subscriber.stop.wait!
     rescue StandardError => e
       puts("\n [ERROR][LISTEN] Exception #{e.inspect}: #{e.message}")
-      raise("Stopped listening for messages.")
+      raise('Stopped listening for messages.')
     end
   end
 
-  desc("Enqueue jobs")
+  desc('Enqueue jobs')
   task(enqueue_jobs: :environment) do
-    puts("Enqueuing jobs...")
+    puts('Enqueuing jobs...')
     index = 0
     timer_task = Concurrent::TimerTask.new(execution_interval: 0.2) do |task|
       puts("\n [TimerTask] Enqueue job #{index + 1}.....")
